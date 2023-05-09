@@ -9,23 +9,39 @@ function App() {
   const [img, setImage] = useState("");
 
   const callBackEnd = async () => {
-    fetch("http://127.0.0.1:5000/api/v1/hci/detector")
-      .then((response) => response.json())
-      .then((data) => setUserData(data));
-   
+    try {
+      fetch("http://127.0.0.1:5000/api/v1/hci/detector")
+        .then((response) => response.json())
+        .then((data) => setUserData(data));
+    } catch (error) {
+      console.log(error);
+    }
   };
   const save_user = async () => {
-    const body={gender:userData.gender,age:userData.age}
-    fetch('http://127.0.0.1:5000/api/v1/hci/user', {
-      Method: 'POST',
-      Headers: {
-        Accept: 'application.json',
-        'Content-Type': 'application/json'
+    const body = { gender: userData.gender, age: userData.age };
+    // fetch("http://127.0.0.1:8001/api/v1/hci/user", {
+    //   Method: "POST",
+    //   Headers: {
+    //     Accept: "application.json",
+    //     "Content-Type": "application/json",
+    //   },
+    //   Body: body,
+    //   Cache: "default",
+    // });
+
+    await fetch("http://127.0.0.1:8001/admin/user", {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
-      Body: body,
-      Cache: 'default'
-    })
-   
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(body), // body data type must match "Content-Type" header
+    });
   };
 
   useEffect(() => {
@@ -56,10 +72,7 @@ function App() {
           <div>Age : {userData.age}</div>
         </div>
         <div>
-          <button onClick={save_user}>
-
-            save_user
-            </button>
+          <button onClick={save_user}>save_user</button>
         </div>
       </div>
     </div>
@@ -67,4 +80,3 @@ function App() {
 }
 
 export default App;
-
